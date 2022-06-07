@@ -1,0 +1,30 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "GetSecretValue",
+            "Action": [
+                "secretsmanager:GetSecretValue"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:secretsmanager:${region}:${acc_id}:secret:${product}*"
+            ]
+        },
+        {
+            "Sid": "DecryptSecretValue",
+            "Action": [
+                "kms:Decrypt"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:kms:${region}:${acc_id}:key/dce03d5b-09df-48c6-be19-fdf5a5cb5fcb"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "kms:ViaService": "secretsmanager.${region}.amazonaws.com"
+                }
+            }
+        }
+    ]
+}
