@@ -11,3 +11,7 @@ output "rds_proxy_iam_role" {
 output "ecs_exec_iam_role" {
     value = aws_iam_role.iam_for_ecs.arn
 }
+
+output "lambda_iam_role" {
+    value = aws_iam_role.iam_for_lambda.arn
+}
