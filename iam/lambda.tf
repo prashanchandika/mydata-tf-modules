@@ -1,5 +1,5 @@
 resource "aws_iam_role" "iam_for_lambda" {
-  name = "${var.product}-lambda-${var.deployment_identifier}-role"
+  name = "${var.product}-${var.deployment_identifier}-lambda-role"
 
   assume_role_policy = <<EOF
 {

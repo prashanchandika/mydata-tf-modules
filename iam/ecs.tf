@@ -1,5 +1,5 @@
 resource "aws_iam_role" "iam_for_ecs" {
-  name = "${var.product}-ecs-execution-${var.deployment_identifier}-role"
+  name = "${var.product}-${var.deployment_identifier}-ecs-execution-role"
 
   assume_role_policy = <<EOF
 {
