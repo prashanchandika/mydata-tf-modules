@@ -13,10 +13,6 @@ variable "product" {
   type        = string
 }
 
-variable "sub_product" {
-  description = "The name of the sub part of the product eg: normalized"
-  type        = string
-}
 
 variable "project" {
   description = "project name. just for tfstate paths"

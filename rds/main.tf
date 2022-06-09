@@ -36,7 +36,7 @@ resource "aws_db_instance" "rds1" {
   engine_version      = var.engine_version
   instance_class      = var.instance_class
   db_name             = "${var.rds_name}"
-  identifier          = "${var.product}-${var.sub_product}-${var.deployment_identifier}"
+  identifier          = "${var.product}-${var.deployment_identifier}"
   username            = var.username
   password            = var.password
   parameter_group_name  = var.parameter_group_name
@@ -52,7 +52,7 @@ resource "aws_db_instance" "rds1" {
 resource "aws_db_subnet_group" "subnet_rds" {
   count      = var.create_rds ? 1 : 0
   
-  name       = "${var.product}-${var.sub_product}-${var.deployment_identifier}-subnetgroup"
+  name       = "${var.product}-${var.deployment_identifier}-subnetgroup"
   subnet_ids = data.terraform_remote_state.network.outputs.vpc["public_subnet_ids"]
   tags = var.tags
 }
@@ -61,7 +61,7 @@ resource "aws_db_subnet_group" "subnet_rds" {
 resource "aws_security_group" "nsg_rds" {
   count       = var.create_rds ? 1 : 0
 
-  name        = "${var.product}-${var.sub_product}-${var.deployment_identifier}-rds-sg"
+  name        = "${var.product}-${var.deployment_identifier}-rds-sg"
   description = "Allow connections on DB Port"
   vpc_id      = data.terraform_remote_state.network.outputs.vpc.id[0]
 
@@ -111,7 +111,7 @@ data "template_file" "rds_secrets" {
 
 module "rds_secret" {
   source              = "../secrets-manager"
-  secret_name         = "${var.product}-${var.sub_product}-${var.deployment_identifier}-rds-sm"
+  secret_name         = "${var.product}-${var.deployment_identifier}-rds-sm"
   secret_string       = data.template_file.rds_secrets.rendered
   tags                = var.tags
 }

@@ -8,7 +8,7 @@ data "terraform_remote_state" "iam" {
 }
 
 resource "aws_db_proxy" "db_proxy1" {
-  name                   = "${var.product}-${var.sub_product}-${var.deployment_identifier}"
+  name                   = "${var.product}-${var.deployment_identifier}"
   debug_logging          = false
   engine_family          = var.engine_family
   idle_client_timeout    = 300
