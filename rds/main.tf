@@ -64,6 +64,10 @@ resource "aws_security_group" "nsg_rds" {
   name        = "${var.product}-${var.deployment_identifier}-rds-sg"
   description = "Allow connections on DB Port"
   vpc_id      = data.terraform_remote_state.network.outputs.vpc.id[0]
+  
+  lifecycle {
+    create_before_destroy = true
+  }
 
   tags = var.tags
 }
