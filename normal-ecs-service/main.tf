@@ -55,7 +55,7 @@ data "terraform_remote_state" "rds" {
   backend = "s3"
   config = {
     bucket = "${var.product}-tf-states-${local.acc_id}"
-    key    = "${var.product}-${var.project}-${local.acc_id}/${var.deployment_identifier}/${var.sub_product}/rds/terraform.tfstate"
+    key    = "${var.product}-${var.project}-${local.acc_id}/${var.deployment_identifier}/rds/terraform.tfstate"
     region = var.backend_region
   }
 }
