@@ -125,6 +125,7 @@ module "ecs_service" {
   ecs_cluster_id = local.ecs_cluster_id
   env_variables = concat(var.env_variables, local.common_envs, local.backend_hosts, local.db_host)
   task_exec_role = data.terraform_remote_state.iam.outputs.ecs_exec_iam_role
+  enable_execute_command  = var.enable_execute_command 
 
 #  Autoscalling related inputs
   scale_target_max_capacity = "${var.scale_target_max_capacity}"

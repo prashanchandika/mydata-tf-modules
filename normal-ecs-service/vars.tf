@@ -337,6 +337,11 @@ variable "common_envs" {
   default = []
 }
 
+variable "enable_execute_command" {
+  type = bool
+  default = true
+}
+
 
 
 # Autoscalling Related Variables 
