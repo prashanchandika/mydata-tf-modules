@@ -39,7 +39,7 @@ resource "aws_db_instance" "rds1" {
   identifier          = "${var.product}-${var.deployment_identifier}"
   username            = var.username
   password            = var.password
-  parameter_group_name  = var.parameter_group_name
+  parameter_group_name  = aws_db_parameter_group.pg1.name
   skip_final_snapshot = var.skip_final_snapshot
 
   publicly_accessible = var.publicly_accessible
@@ -56,6 +56,19 @@ resource "aws_db_subnet_group" "subnet_rds" {
   subnet_ids = data.terraform_remote_state.network.outputs.vpc["public_subnet_ids"]
   tags = var.tags
 }
+
+resource "aws_db_parameter_group" "pg1" {
+  name   = "${var.product}-${var.deployment_identifier}-parametergroup"
+  family = "postgres12"
+
+  parameter {
+    apply_method = "pending-reboot"
+    name  = "shared_preload_libraries"
+    value = "pg_stat_statements,pg_cron"
+  }
+
+}
+
 
 #Security Group for RDS
 resource "aws_security_group" "nsg_rds" {
