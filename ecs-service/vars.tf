@@ -229,6 +229,10 @@ variable "env_variables" {
   
 }
 
+variable "enable_execute_command" {
+  type = bool
+}
+
 variable "external_service" {
   description = "create listeners for only 80 and 443 if external"
   type        = bool

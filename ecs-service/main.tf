@@ -5,6 +5,7 @@ resource "aws_ecs_service" "service1" {
   desired_count   = "${var.service_desired_count}"
   depends_on      = [aws_ecs_task_definition.td1]
   launch_type     = "FARGATE"
+  enable_execute_command = var.enable_execute_command
 
   tags            = "${var.tags}"
 
