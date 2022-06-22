@@ -33,7 +33,7 @@ locals {
 #parameters
   env_variables = [ 
     for env in var.env_variables: {
-    "name": env.name, "valueFrom": "arn:aws:ssm:${var.region}:${local.acc_id}:parameter/${var.deployment_identifier}/${var.product}/${var.service_name}/${env.name}" 
+    "name": env.name, "valueFrom": "arn:aws:ssm:${var.region}:${local.acc_id}:parameter/${var.deployment_identifier}/${var.product}/${var.sub_product}/${var.service_name}/${env.name}" 
     }]
 
 }
@@ -43,7 +43,7 @@ resource "aws_ssm_parameter" "env_parameters" {
   for_each    = { 
     for env in var.env_variables : env.name => env
   }
-  name        = "/${var.deployment_identifier}/${var.product}/${var.service_name}/${each.key}"
+  name        = "/${var.deployment_identifier}/${var.product}/${var.sub_product}/${var.service_name}/${each.key}"
   description = ""
   type        = "SecureString"
   value       = "${each.value.value}"
