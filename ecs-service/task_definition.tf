@@ -8,6 +8,7 @@ data "template_file" "service" {
     port      = var.service_port
     region    = var.region
     env_variables = jsonencode(var.env_variables)
+    secrets   = jsonencode(var.secrets)
     log_group = var.include_log_group == "yes" ? aws_cloudwatch_log_group.service[0].name : ""
   }
 }

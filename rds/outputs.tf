@@ -10,6 +10,10 @@ output "db_seret_name" {
     value = module.rds_secret.secrets_manager["name"]
 }
 
+output "db_seret_arn" {
+    value = module.rds_secret.secrets_manager["id"]
+}
+
 output "rds_proxy_endpoint" {
     value = aws_db_proxy.db_proxy1.endpoint
 }

@@ -1,7 +1,5 @@
 provider "aws" {
-region="${var.region}"
-access_key = ""
-secret_key = ""
+  region=var.region
 }
 
 terraform {
@@ -27,11 +25,32 @@ locals {
     for service in var.backend_hosts: {
     "name": service, "value": "${data.terraform_remote_state.external_alb.outputs.alb.dns}" 
     }]
-  db_host                     = [{"name": "DB_HOST", "value": "${data.terraform_remote_state.rds.outputs.db_host.0}"}]
+#  db_host                     = [{"name": "DB_HOST", "value": "${data.terraform_remote_state.rds.outputs.db_host.0}"}]
+  db_host                     = [{"name": "DB_HOST", "valueFrom": "${data.terraform_remote_state.rds.outputs.db_seret_arn}:proxyhost::"}]
+  db_user                     = [{"name": "DB_USER", "valueFrom": "${data.terraform_remote_state.rds.outputs.db_seret_arn}:username::"}]
+  db_password                 = [{"name": "DB_PASSWORD", "valueFrom": "${data.terraform_remote_state.rds.outputs.db_seret_arn}:password::"}]
+
+#parameters
+  env_variables = [ 
+    for env in var.env_variables: {
+    "name": env.name, "valueFrom": "arn:aws:ssm:${var.region}:${local.acc_id}:parameter/${var.deployment_identifier}/${var.product}/${var.service_name}/${env.name}" 
+    }]
+
 }
 
+#parameter store
+resource "aws_ssm_parameter" "env_parameters" {
+  for_each    = { 
+    for env in var.env_variables : env.name => env
+  }
+  name        = "/${var.deployment_identifier}/${var.product}/${var.service_name}/${each.key}"
+  description = ""
+  type        = "SecureString"
+  value       = "${each.value.value}"
 
-
+  tags = var.tags
+}
+################################
 
 data "terraform_remote_state" "network" {
   backend = "s3"
@@ -123,7 +142,8 @@ module "ecs_service" {
   task_cpu = var.task_cpu
   task_memory = var.task_memory
   ecs_cluster_id = local.ecs_cluster_id
-  env_variables = concat(var.env_variables, local.common_envs, local.backend_hosts, local.db_host)
+  env_variables = concat(local.common_envs, local.backend_hosts)
+  secrets    = concat(local.db_host, local.db_user, local.db_password, local.env_variables)
   task_exec_role = data.terraform_remote_state.iam.outputs.ecs_exec_iam_role
   enable_execute_command  = var.enable_execute_command 
 
@@ -147,3 +167,4 @@ module "ecr_repo" {
   tags          = "${var.tags}"
 
 }
+
