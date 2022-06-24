@@ -66,10 +66,12 @@ variable "identifier"{
 
 variable "username"{
     type = string
+    sensitive   = true
 }
 
 variable "password"{
     type = string
+    sensitive   = true
 }
 
 variable "skip_final_snapshot"{

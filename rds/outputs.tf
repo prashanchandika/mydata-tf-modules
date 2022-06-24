@@ -4,6 +4,7 @@ output "db_host" {
 
 output "db_user" {
     value = var.username
+    sensitive   = true
 }
 
 output "db_seret_name" {
