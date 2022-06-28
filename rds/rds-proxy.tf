@@ -12,7 +12,7 @@ resource "aws_db_proxy" "db_proxy1" {
   debug_logging          = false
   engine_family          = var.engine_family
   idle_client_timeout    = 300
-  require_tls            = true
+  require_tls            = false
   role_arn               = data.terraform_remote_state.iam.outputs.rds_proxy_iam_role
   vpc_security_group_ids = [aws_security_group.nsg_rds.0.id]
   vpc_subnet_ids         = data.terraform_remote_state.network.outputs.vpc["private_subnet_ids"]
