@@ -13,10 +13,6 @@ variable "product" {
   type        = string
 }
 
-variable "sub_product" {
-  description = "The name of the sub part of the product eg: normalized"
-  type        = string
-}
 
 variable "project" {
   description = "project name. just for tfstate paths"
@@ -70,10 +66,12 @@ variable "identifier"{
 
 variable "username"{
     type = string
+    sensitive   = true
 }
 
 variable "password"{
     type = string
+    sensitive   = true
 }
 
 variable "skip_final_snapshot"{

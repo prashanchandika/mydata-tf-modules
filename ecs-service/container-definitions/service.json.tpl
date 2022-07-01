@@ -5,6 +5,7 @@
     "essential": true,
     "command": ${command},
     "environment": ${env_variables},
+    "secrets": ${secrets},
     "portMappings": [
       {
         "containerPort": ${port},

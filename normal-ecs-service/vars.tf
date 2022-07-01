@@ -324,6 +324,7 @@ variable "env_variables"{
           "value": "xxxxx"
         }
       ]
+  sensitive = true
 
 }
 
@@ -335,6 +336,11 @@ variable "backend_hosts" {
 
 variable "common_envs" {
   default = []
+}
+
+variable "enable_execute_command" {
+  type = bool
+  default = true
 }
 
 

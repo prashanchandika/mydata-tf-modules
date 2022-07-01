@@ -2,6 +2,8 @@ variable "region" {
   description = "The region into which to deploy the service."
   type        = string
 }
+
+
 variable "vpc_id" {
   description = "The ID of the VPC into which to deploy the service."
   type        = string
@@ -227,6 +229,13 @@ variable "certificate_arn" {
 
 variable "env_variables" {
   
+}
+variable "secrets" {
+  
+}
+
+variable "enable_execute_command" {
+  type = bool
 }
 
 variable "external_service" {

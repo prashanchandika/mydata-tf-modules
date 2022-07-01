@@ -4,10 +4,15 @@ output "db_host" {
 
 output "db_user" {
     value = var.username
+    sensitive   = true
 }
 
 output "db_seret_name" {
     value = module.rds_secret.secrets_manager["name"]
+}
+
+output "db_seret_arn" {
+    value = module.rds_secret.secrets_manager["id"]
 }
 
 output "rds_proxy_endpoint" {

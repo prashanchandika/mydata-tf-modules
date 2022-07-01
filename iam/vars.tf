@@ -23,11 +23,6 @@ variable "product" {
   type        = string
 }
 
-variable "sub_product" {
-  description = "The name of the sub part of the product eg: normalized"
-  type        = string
-}
-
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
