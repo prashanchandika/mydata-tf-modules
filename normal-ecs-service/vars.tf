@@ -324,7 +324,7 @@ variable "env_variables"{
           "value": "xxxxx"
         }
       ]
-  sensitive = true
+  sensitive = false
 
 }
 
