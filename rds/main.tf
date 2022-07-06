@@ -44,6 +44,8 @@ resource "aws_db_instance" "rds1" {
   db_subnet_group_name = aws_db_subnet_group.subnet_rds.0.id
   vpc_security_group_ids = [aws_security_group.nsg_rds.0.id]
   tags                = var.tags
+
+  apply_immediately   = var.apply_immediately
 }
 
 

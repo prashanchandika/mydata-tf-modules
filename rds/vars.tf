@@ -103,6 +103,13 @@ variable "parameter_group_name" {
   type    = string
   default = "default.postgres12"
 }
+
+
+variable "apply_immediately" {
+  default = false
+  type    = bool
+  description = "Weather the changes on rds instance be applied immediately."
+}
  
 variable "tags" {
   default     = {}
