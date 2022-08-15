@@ -70,11 +70,13 @@ variable "sftp_user"{
 variable "sftp_pass"{
   type    = string
   default = "broadvine-sftp"
+  sensitive   = true
 }
 
 variable "mdo_pass"{
   type = string
   default = "mdo@123"
+  sensitive   = true
 }
 
 variable "mdo_user"{
