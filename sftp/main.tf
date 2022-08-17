@@ -120,12 +120,13 @@ data "template_file" "userdata" {
   template = file("${path.module}/templates/userdata.sh")
 
   vars = {
-    sftp_root     = var.sftp_root
-    sftp_root_mdo = var.sftp_root_mdo
-    sftp_user     = var.sftp_user
-    sftp_pass     = var.sftp_pass
-    mdo_user      = var.mdo_user
-    mdo_pass      = var.mdo_pass
+    sftp_home               = var.sftp_home
+    sftp_root_broadvine     = "${var.sftp_home}/${var.sftp_root_broadvine_dir}"
+    sftp_root_mdo           = "${var.sftp_home}/${var.sftp_root_mdo_dir}"
+    sftp_user               = var.sftp_user
+    sftp_pass               = var.sftp_pass
+    mdo_user                = var.mdo_user
+    mdo_pass                = var.mdo_pass
   }
 }
 

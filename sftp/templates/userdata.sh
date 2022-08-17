@@ -1,13 +1,14 @@
 #!/bin/bash
 
 echo "### Create chroots"
-mkdir -p ${sftp_root} && chmod 755 ${sftp_root}
+mkdir -p ${sftp_home} && chmod 755 ${sftp_home}
+mkdir -p ${sftp_root_broadvine} && chmod 755 ${sftp_root_broadvine}
 mkdir -p  ${sftp_root_mdo} && chmod 755 ${sftp_root_mdo}
 
 echo "### Create shared directories"
-mkdir -p ${sftp_root}/Outbound
-mkdir -p ${sftp_root}/Outbound/ERP/Actual
-mkdir -p ${sftp_root}/Outbound/myPlan/myPlan\ Budget
+mkdir -p ${sftp_root_broadvine}/Outbound
+mkdir -p ${sftp_root_broadvine}/Outbound/ERP/Actual
+mkdir -p ${sftp_root_broadvine}/Outbound/myPlan/myPlan\ Budget
 
 echo "### Create mdo shared dir"
 mkdir -p ${sftp_root_mdo}/YDM
@@ -17,7 +18,7 @@ useradd -p $(openssl passwd -1 "${sftp_pass}") "${sftp_user}"
 useradd -p $(openssl passwd -1 "${mdo_pass}") "${mdo_user}"
 
 echo "### Change ownership"
-chown -R ${sftp_user}:${sftp_user} ${sftp_root}/*
+chown -R ${sftp_user}:${sftp_user} ${sftp_root_broadvine}/*
 chown -R ${mdo_user}:${mdo_user} ${sftp_root_mdo}/*
 
 echo "### Restricting SFTP user access to directory"
@@ -25,7 +26,7 @@ tee -a /etc/ssh/sshd_config << EOF
 Match User ${sftp_user}
         ForceCommand internal-sftp
         PasswordAuthentication yes
-        ChrootDirectory ${sftp_root}
+        ChrootDirectory ${sftp_root_broadvine}
         PermitTunnel no
         AllowAgentForwarding no
         AllowTcpForwarding no

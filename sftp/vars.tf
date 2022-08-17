@@ -53,13 +53,18 @@ variable "sftp_ingress_cidrs" {
 
 
 #SFTP
-variable "sftp_root"{
+variable "sftp_home"{
   type    = string
-  default = "/sftp_root"
+  default = "/sftp_home"
 }
-variable "sftp_root_mdo"{
+
+variable "sftp_root_broadvine_dir"{
   type    = string
-  default = "/sftp_root_mdo"
+  default = "highgate-broadvine"
+}
+variable "sftp_root_mdo_dir"{
+  type    = string
+  default = "m3as-mdo"
 }
 
 variable "sftp_user"{
