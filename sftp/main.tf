@@ -121,8 +121,8 @@ data "template_file" "userdata" {
 
   vars = {
     sftp_home               = var.sftp_home
-    sftp_root_broadvine     = "${var.sftp_home}/${var.sftp_root_broadvine_dir}"
-    sftp_root_mdo           = "${var.sftp_home}/${var.sftp_root_mdo_dir}"
+    sftp_root_broadvine_dir = var.sftp_root_broadvine_dir
+    sftp_root_mdo_dir       = var.sftp_root_mdo_dir
     sftp_user               = var.sftp_user
     sftp_pass               = var.sftp_pass
     mdo_user                = var.mdo_user
