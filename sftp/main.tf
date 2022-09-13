@@ -127,6 +127,8 @@ data "template_file" "userdata" {
     sftp_pass               = var.sftp_pass
     mdo_user                = var.mdo_user
     mdo_pass                = var.mdo_pass
+    mdo_test_user           = var.mdo_test_user
+    mdo_test_pass           = var.mdo_test_pass
   }
 }
 
@@ -153,4 +155,14 @@ resource "aws_instance" "sftp" {
       "Name" = "${var.product}-${var.deployment_identifier}-sftp" 
     },
   )
+}
+
+
+resource "aws_eip" "eip" {
+  vpc = true
+}
+
+resource "aws_eip_association" "eip_assoc" {
+  instance_id   = aws_instance.sftp.id
+  allocation_id = aws_eip.eip.id
 }

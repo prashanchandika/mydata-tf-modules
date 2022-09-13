@@ -89,6 +89,17 @@ variable "mdo_user"{
   default = "mdo"
 }
 
+variable "mdo_test_user"{
+  type = string
+  default = "mdoffice-sftp-test"
+}
+
+variable "mdo_test_pass"{
+  type = string
+  default = "mdoffice@123"
+}
+
+
 
 
 #tags

@@ -12,6 +12,7 @@ echo "### Create shared directories"
 mkdir -p $sftp_root_broadvine/Outbound
 mkdir -p $sftp_root_broadvine/Outbound/ERP/Actual
 mkdir -p $sftp_root_broadvine/Outbound/myPlan/myPlan\ Budget
+mkdir -p $sftp_root_broadvine/Outbound/myPlan/myPlan\ Forecast
 
 echo "### Create mdo shared dir"
 mkdir -p $sftp_root_mdo/YDM
@@ -19,6 +20,7 @@ mkdir -p $sftp_root_mdo/YDM
 echo "### Create sftp user"
 useradd -p $(openssl passwd -1 "${sftp_pass}") "${sftp_user}"
 useradd -p $(openssl passwd -1 "${mdo_pass}") "${mdo_user}"
+useradd -p $(openssl passwd -1 "${mdo_test_pass}") "${mdo_test_user}"
 
 echo "### Change ownership"
 chown -R ${sftp_user}:ubuntu $sftp_root_broadvine/*
