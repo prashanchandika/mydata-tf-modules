@@ -66,6 +66,10 @@ variable "sftp_root_mdo_dir"{
   type    = string
   default = "m3as-mdo"
 }
+variable "mdo_test_user_dir"{
+  type    = string
+  default = "mdoffice-sftp-test"
+}
 
 variable "sftp_user"{
   type    = string
