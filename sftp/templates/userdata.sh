@@ -21,7 +21,7 @@ echo "### Create mdo shared subdirectories"
 mkdir -p $sftp_root_mdo/YDM
 
 echo "### Create mdo test subdirectories"
-# Nothing as of now
+mkdir -p $sftp_root_mdo_test/MAR
 
 echo "### Create sftp user"
 useradd -p $(openssl passwd -1 "${sftp_pass}") "${sftp_user}"
