@@ -26,7 +26,7 @@ echo "### Create mdo test subdirectories"
 echo "### Create sftp user"
 useradd -p $(openssl passwd -1 "${sftp_pass}") "${sftp_user}"
 useradd -p $(openssl passwd -1 "${mdo_pass}") "${mdo_user}"
-useradd -p $(openssl passwd -1 "${mdo_test_pass}") -m "${mdo_test_user}"
+useradd -p $(openssl passwd -1 "${mdo_test_pass}") "${mdo_test_user}"
 
 echo "### Change ownership"
 chown -R ${sftp_user}:ubuntu $sftp_root_broadvine/*
