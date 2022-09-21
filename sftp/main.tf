@@ -156,6 +156,10 @@ resource "aws_instance" "sftp" {
       "Name" = "${var.product}-${var.deployment_identifier}-sftp" 
     },
   )
+
+  lifecycle {
+    ignore_changes = ["ami"]
+  }
 }
 
 
