@@ -174,3 +174,11 @@ module "ecr_repo" {
 
 }
 
+
+module "secrets" {
+  for_each      = { for secret in var.secrets : secret.name => secret }
+  
+  source        = "../secrets-manager"
+  secret_name   = "${var.product}-${var.sub_product}-${each.value.name}-${var.deployment_identifier}"
+  secret_string = each.value.value
+}

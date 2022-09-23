@@ -462,3 +462,9 @@ variable "scan_on_push"{
   description = ""
   default     = false
 }
+
+
+
+variable "secrets" {
+  
+} 
