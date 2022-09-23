@@ -466,5 +466,5 @@ variable "scan_on_push"{
 
 
 variable "secrets" {
-  
+  default = []
 } 
