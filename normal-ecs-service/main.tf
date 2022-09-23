@@ -54,6 +54,7 @@ resource "aws_ssm_parameter" "env_parameters" {
     ignore_changes = [
       "value",
     ]
+  }
 }
 ################################
 
