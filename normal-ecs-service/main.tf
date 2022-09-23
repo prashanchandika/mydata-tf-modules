@@ -49,6 +49,11 @@ resource "aws_ssm_parameter" "env_parameters" {
   value       = "${each.value.value}"
 
   tags = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      "value",
+    ]
 }
 ################################
 
