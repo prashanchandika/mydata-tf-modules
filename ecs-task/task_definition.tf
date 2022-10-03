@@ -8,10 +8,11 @@ data "template_file" "service" {
     port      = var.task_port
     region    = var.region
     env_variables = jsonencode(var.env_variables)
-    secrets   = jsonencode(var.secrets)
+    secrets   = jsonencode(concat(local.db_host, local.db_user, local.db_password, local.env_variables))
     log_group = var.include_log_group == "yes" ? aws_cloudwatch_log_group.service[0].name : ""
   }
 }
+
 
 resource "aws_ecs_task_definition" "td1" {
   family                = "${local.ecs_service_prefix}-${var.task_name}-${var.deployment_identifier}-task"

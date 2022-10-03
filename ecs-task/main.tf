@@ -18,6 +18,15 @@ locals {
     ecs_cluster_id                =  "${data.terraform_remote_state.ecs_cluster.outputs.ecs_cluster_name}"
     ecs_service_prefix            =  "${data.terraform_remote_state.ecs_cluster.outputs.ecs_service_prefix}"
     vpc_private_subnet_ids        = ["${data.terraform_remote_state.network.outputs.vpc["private_subnet_ids"]}"]
+    db_host                     = [{"name": "DB_HOST", "valueFrom": "${data.terraform_remote_state.rds.outputs.db_seret_arn}:proxyhost::"}]
+    db_user                     = [{"name": "DB_USER", "valueFrom": "${data.terraform_remote_state.rds.outputs.db_seret_arn}:username::"}]
+    db_password                 = [{"name": "DB_PASSWORD", "valueFrom": "${data.terraform_remote_state.rds.outputs.db_seret_arn}:password::"}]
+    common_envs                   =  [{"name": "GATEWAY_GRAPHQL", "value": "${data.terraform_remote_state.external_alb.outputs.alb.dns}/graphql"}]
+
+    env_variables = [ 
+    for env in var.env_variables: {
+    "name": env.name, "valueFrom": "arn:aws:ssm:${var.region}:${local.acc_id}:parameter/${var.deployment_identifier}/${var.product}/${var.sub_product}/${var.task_name}/${env.name}" 
+    }]
 }
 
 data "terraform_remote_state" "network" {
@@ -47,6 +56,23 @@ data "terraform_remote_state" "ecs_cluster" {
   }
 }
 
+data "terraform_remote_state" "external_alb" {
+  backend = "s3"
+  config = {
+    bucket = "${var.product}-tf-states-${local.acc_id}"
+    key    = "${var.product}-${var.project}-${local.acc_id}/${var.deployment_identifier}/${var.sub_product}/alb-external/terraform.tfstate"
+    region = var.backend_region
+  }
+}
+
+data "terraform_remote_state" "rds" {
+  backend = "s3"
+  config = {
+    bucket = "${var.product}-tf-states-${local.acc_id}"
+    key    = "${var.product}-${var.project}-${local.acc_id}/${var.deployment_identifier}/rds/terraform.tfstate"
+    region = var.backend_region
+  }
+}
 /* resource "aws_security_group" "nsg_service" {
   name        = "${var.task_name}-${var.deployment_identifier}-sg"
   description = "Allow connections from ALB ${var.task_name}-${var.deployment_identifier}-lb to service"
@@ -69,4 +95,24 @@ module "ecr_repo" {
   scan_on_push  = "${var.scan_on_push}"
   tags          = "${var.tags}"
 
+}
+
+
+#parameter store
+resource "aws_ssm_parameter" "env_parameters" {
+  for_each    = { 
+    for env in var.env_variables : env.name => env
+  }
+  name        = "/${var.deployment_identifier}/${var.product}/${var.sub_product}/${var.task_name}/${each.key}"
+  description = ""
+  type        = "SecureString"
+  value       = "${each.value.value}"
+
+  tags = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      "value",
+    ]
+  }
 }
