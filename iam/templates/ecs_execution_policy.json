@@ -2,184 +2,103 @@
     "Version": "2012-10-17",
     "Statement": [
         {
+            "Sid": "VisualEditor0",
             "Effect": "Allow",
             "Action": [
-                "ecr:GetAuthorizationToken",
+                "cloudwatch:PutMetricData",
+                "secretsmanager:PutSecretValue",
+                "ds:CreateComputer",
+                "ssm:ListInstanceAssociations",
+                "ssm:UpdateAssociationStatus",
+                "logs:CreateLogStream",
+                "ssm:UpdateInstanceInformation",
+                "ssm:PutComplianceItems",
                 "ecr:BatchCheckLayerAvailability",
                 "ecr:GetDownloadUrlForLayer",
-                "ecr:BatchGetImage",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ssm:DescribeAssociation",
-                "ssm:GetDeployablePatchSnapshotForInstance",
-                "ssm:GetDocument",
-                "ssm:DescribeDocument",
-                "ssm:GetManifest",
-                "ssm:GetParameters",
-                "ssm:ListAssociations",
-                "ssm:ListInstanceAssociations",
-                "ssm:PutInventory",
-                "ssm:PutComplianceItems",
-                "ssm:PutConfigurePackageResult",
-                "ssm:UpdateAssociationStatus",
-                "ssm:UpdateInstanceAssociationStatus",
-                "ssm:UpdateInstanceInformation"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "secretsmanager:GetSecretValue",
-                "secretsmanager:PutSecretValue"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ssmmessages:CreateControlChannel",
-                "ssmmessages:CreateDataChannel",
-                "ssmmessages:OpenControlChannel",
-                "ssmmessages:OpenDataChannel"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
                 "ec2messages:AcknowledgeMessage",
-                "ec2messages:DeleteMessage",
-                "ec2messages:FailMessage",
-                "ec2messages:GetEndpoint",
-                "ec2messages:GetMessages",
-                "ec2messages:SendReply"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "cloudwatch:PutMetricData"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ec2:DescribeInstanceStatus"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ds:CreateComputer",
-                "ds:DescribeDirectories"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
+                "ecr:GetAuthorizationToken",
+                "ssm:GetParameters",
                 "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:DescribeLogGroups",
-                "logs:DescribeLogStreams",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:GetBucketLocation",
+                "imagebuilder:GetContainerRecipe",
+                "s3:ListMultipartUploadParts",
+                "ecr:PutImage",
                 "s3:PutObject",
                 "s3:GetObject",
-                "s3:GetEncryptionConfiguration",
-                "s3:AbortMultipartUpload",
-                "s3:ListMultipartUploadParts",
-                "s3:ListBucket",
-                "s3:ListBucketMultipartUploads"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ecr:GetAuthorizationToken",
-                "ecr:BatchCheckLayerAvailability",
-                "ecr:GetDownloadUrlForLayer",
                 "ecr:BatchGetImage",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ssm:Describe*",
-                "ssm:Get*",
-                "ssm:List*"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "imagebuilder:GetComponent",
-                "imagebuilder:GetContainerRecipe",
-                "ecr:GetAuthorizationToken",
-                "ecr:BatchGetImage",
+                "ec2:*",
+                "ssm:List*",
+                "ec2messages:SendReply",
                 "ecr:InitiateLayerUpload",
+                "ssm:DescribeDocument",
+                "imagebuilder:GetComponent",
+                "ec2messages:GetEndpoint",
+                "logs:DescribeLogStreams",
+                "s3:ListBucket",
+                "ec2messages:GetMessages",
+                "ssmmessages:OpenControlChannel",
+                "ssm:PutConfigurePackageResult",
                 "ecr:UploadLayerPart",
+                "ssm:GetManifest",
+                "s3:GetEncryptionConfiguration",
+                "ec2messages:DeleteMessage",
+                "secretsmanager:GetSecretValue",
+                "ecs:RunTask",
+                "s3:AbortMultipartUpload",
+                "ec2messages:FailMessage",
+                "ssmmessages:OpenDataChannel",
+                "ssm:GetDocument",
                 "ecr:CompleteLayerUpload",
-                "ecr:BatchCheckLayerAvailability",
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:PutImage"
+                "s3:ListBucketMultipartUploads",
+                "ssm:DescribeAssociation",
+                "logs:DescribeLogGroups",
+                "ssm:GetDeployablePatchSnapshotForInstance",
+                "ssm:Get*",
+                "ssmmessages:CreateControlChannel",
+                "logs:PutLogEvents",
+                "ssmmessages:CreateDataChannel",
+                "ssm:PutInventory",
+                "ssm:Describe*",
+                "ds:DescribeDirectories",
+                "ssm:ListAssociations",
+                "s3:GetBucketLocation",
+                "ssm:UpdateInstanceAssociationStatus",
+                "ecs:*"
             ],
             "Resource": "*"
         },
         {
+            "Sid": "VisualEditor1",
             "Effect": "Allow",
-            "Action": [
-                "kms:Decrypt"
-            ],
+            "Action": "kms:Decrypt",
             "Resource": "*",
             "Condition": {
                 "ForAnyValue:StringEquals": {
                     "kms:EncryptionContextKeys": "aws:imagebuilder:arn",
-                    "aws:CalledVia": [
-                        "imagebuilder.amazonaws.com"
-                    ]
+                    "aws:CalledVia": "imagebuilder.amazonaws.com"
                 }
             }
         },
         {
+            "Sid": "VisualEditor2",
             "Effect": "Allow",
             "Action": [
-                "s3:GetObject"
-            ],
-            "Resource": "arn:aws:s3:::ec2imagebuilder*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
+                "s3:GetObject",
                 "logs:CreateLogStream",
                 "logs:CreateLogGroup",
                 "logs:PutLogEvents"
             ],
-            "Resource": "arn:aws:logs:*:*:log-group:/aws/imagebuilder/*"
+            "Resource": [
+                "arn:aws:logs:*:*:log-group:/aws/imagebuilder/*",
+                "arn:aws:s3:::ec2imagebuilder*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:GetRole",
+                "iam:PassRole"
+            ],
+            "Resource": "arn:aws:iam::*:role/mydata-*"
         }
-
-
     ]
-
 }
