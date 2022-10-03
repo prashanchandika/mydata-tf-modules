@@ -143,7 +143,7 @@ variable "task_command" {
 
 variable "task_image" {
   description = "The docker image (including version) to deploy."
-  default     = ""
+  default     = "latest"
   type        = string
 }
 
