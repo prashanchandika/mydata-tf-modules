@@ -7,7 +7,8 @@ data "template_file" "service" {
     command   = jsonencode(var.task_command)
     port      = var.task_port
     region    = var.region
-    env_variables = jsonencode(var.env_variables)
+    #env_variables = jsonencode(var.env_variables)
+    env_variables = jsonencode([])
     secrets   = jsonencode(concat(local.db_host, local.db_user, local.db_password, local.env_variables))
     log_group = var.include_log_group == "yes" ? aws_cloudwatch_log_group.service[0].name : ""
   }
