@@ -148,11 +148,11 @@ variable "service_image_tag" {
 }
 
 variable "task_memory"{
-  default = 2048
+  default = 512
 }
 
 variable "task_cpu"{
-  default = 1024
+  default = 256
 }
 
 variable "service_task_network_mode" {
