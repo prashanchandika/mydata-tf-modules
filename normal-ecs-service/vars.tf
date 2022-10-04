@@ -116,10 +116,10 @@ variable "service_health_check_grace_period_seconds" {
 }
 
 variable "task_memory"{
-  default = 2048
+  default = 512
 }
 variable "task_cpu"{
-  default = 1024
+  default = 256
 }
 
 variable "attach_to_load_balancer" {
