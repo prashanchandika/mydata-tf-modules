@@ -3,7 +3,7 @@ data "template_file" "service" {
 
   vars = {
     name      = "${local.ecs_service_prefix}-${var.task_name}-${var.deployment_identifier}"
-    image     = var.task_image
+    image     = "${module.ecr_repo.ecr_url}:${var.service_image_tag}"
     command   = jsonencode(var.task_command)
     port      = var.task_port
     region    = var.region
