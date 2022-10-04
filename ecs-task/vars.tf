@@ -141,7 +141,7 @@ variable "task_command" {
   default     = []
 }
 
-variable "task_image" {
+variable "service_image_tag" {
   description = "The docker image (including version) to deploy."
   default     = "latest"
   type        = string
