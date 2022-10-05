@@ -67,6 +67,12 @@ resource "aws_db_parameter_group" "pg1" {
     value = "pg_stat_statements,pg_cron"
   }
 
+  parameter {
+    apply_method = "pending-reboot"
+    name  = "max_connections"
+    value = "200"
+  }
+
 }
 
 
