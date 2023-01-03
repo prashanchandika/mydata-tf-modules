@@ -76,6 +76,11 @@ variable "mdo_udp_user_dir"{
   default = "mdo-sftp-udp"
 }
 
+variable "mdo_udp_test_user_dir"{
+  type    = string
+  default = "mdo-sftp-test"
+}
+
 variable "sftp_user"{
   type    = string
   default = "broadvine-sftp"
@@ -116,6 +121,16 @@ variable "mdo_udp_user"{
 variable "mdo_udp_pass"{
   type = string
   default = "mdo-udp@123"
+}
+
+variable "mdo_udp_test_user"{
+  type = string
+  default = "udpsftp-mdo-test"
+}
+
+variable "mdo_udp_test_pass"{
+  type = string
+  default = "mdo-test@123"
 }
 
 
