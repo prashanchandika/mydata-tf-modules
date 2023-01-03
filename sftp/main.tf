@@ -124,15 +124,18 @@ data "template_file" "userdata" {
     sftp_root_broadvine_dir = var.sftp_root_broadvine_dir
     sftp_root_mdo_dir       = var.sftp_root_mdo_dir
     mdo_test_user_dir       = var.mdo_test_user_dir
-    mdo_udp_user_dir       = var.mdo_udp_user_dir
+    mdo_udp_user_dir        = var.mdo_udp_user_dir
+    mdo_udp_test_user_dir   = var.mdo_udp_test_user_dir
     sftp_user               = var.sftp_user
     sftp_pass               = var.sftp_pass
     mdo_user                = var.mdo_user
     mdo_pass                = var.mdo_pass
     mdo_test_user           = var.mdo_test_user
     mdo_test_pass           = var.mdo_test_pass
-    mdo_udp_user           = var.mdo_udp_user
-    mdo_udp_pass           = var.mdo_udp_pass
+    mdo_udp_user            = var.mdo_udp_user
+    mdo_udp_pass            = var.mdo_udp_pass
+    mdo_udp_test_user       = var.mdo_udp_test_user
+    mdo_udp_test_pass       = var.mdo_udp_test_pass
   }
 }
 
