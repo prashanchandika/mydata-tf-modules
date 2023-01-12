@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {}
-  required_version = "= 1.1.7"
+  required_version = ">= 1.1.7"
 
   required_providers {
     aws = "= 4.2.0"
@@ -47,7 +47,7 @@ data "aws_ami" "sftp-ami" {
 }
 
 
-#IAM
+
 resource "aws_iam_role" "sftp" {
   name = format("%s-%s-%s", var.product, var.deployment_identifier, "sftp")
 
@@ -74,6 +74,11 @@ resource "aws_iam_role_policy_attachment" "ssm" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+#EBS Policy attachement
+resource "aws_iam_role_policy_attachment" "ebs" {
+  role       = aws_iam_role.sftp.id
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+}
 # Instance Profile
 resource "aws_iam_instance_profile" "sftp" {
   name = format("%s-%s-%s", var.product, var.deployment_identifier, "sftp")
@@ -116,10 +121,23 @@ resource "aws_security_group_rule" "ingress" {
   cidr_blocks       = var.sftp_ingress_cidrs
 }
 
+#EBS
+data "aws_subnet" "sftp" {
+  id = local.public_subnet_ids[0]
+}
+
+resource "aws_ebs_volume" "stfp" {
+  availability_zone = data.aws_subnet.sftp.availability_zone
+  size              = var.volume_size
+  tags              = var.tags
+}
+#########################################
+
 data "template_file" "userdata" {
-  template = file("${path.module}/templates/userdata.sh")
+  template = file("${path.module}/templates/ud.sh")
 
   vars = {
+    vol_id                  = aws_ebs_volume.stfp.id
     sftp_home               = var.sftp_home
     sftp_root_broadvine_dir = var.sftp_root_broadvine_dir
     sftp_root_mdo_dir       = var.sftp_root_mdo_dir
@@ -137,6 +155,10 @@ data "template_file" "userdata" {
     mdo_udp_test_user       = var.mdo_udp_test_user
     mdo_udp_test_pass       = var.mdo_udp_test_pass
   }
+
+  depends_on = [
+    aws_ebs_volume.stfp
+    ]
 }
 
 
@@ -171,9 +193,67 @@ resource "aws_instance" "sftp" {
 
 resource "aws_eip" "eip" {
   vpc = true
+
+  tags = merge(
+    var.tags,
+    {
+      Name = "${var.product}-${var.deployment_identifier}-sftp-eip"
+    },
+  )
 }
 
 resource "aws_eip_association" "eip_assoc" {
   instance_id   = aws_instance.sftp.id
   allocation_id = aws_eip.eip.id
 }
+
+#ASG#################################################
+resource "aws_launch_template" "lt" {
+  name = "${var.product}-${var.deployment_identifier}-sftp"
+
+  ebs_optimized = false
+  update_default_version = true
+  user_data     = base64encode(data.template_file.userdata.rendered)
+
+  iam_instance_profile {
+    name = aws_iam_instance_profile.sftp.name
+  }
+
+  image_id = data.aws_ami.sftp-ami.id
+
+  instance_initiated_shutdown_behavior = "terminate"
+
+  instance_type = var.sftp_instance_type
+
+  key_name = var.key_name
+
+
+  vpc_security_group_ids = [aws_security_group.sftp.id]
+
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = merge(
+    var.tags,
+    { 
+      "Name" = "${var.product}-${var.deployment_identifier}-sftp" 
+    },
+  )
+  }
+}
+
+resource "aws_autoscaling_group" "asg" {
+  name                      = "${var.product}-${var.deployment_identifier}-sftp"
+  max_size                  = 1
+  min_size                  = 1
+  health_check_grace_period = 300
+  health_check_type         = "EC2"
+  desired_capacity          = 1
+  force_delete              = true
+  vpc_zone_identifier       = [local.public_subnet_ids[0]]
+
+  launch_template           { 
+    name = aws_launch_template.lt.name
+  }
+}
+

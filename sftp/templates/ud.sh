@@ -1,5 +1,31 @@
 #!/bin/bash
 
+#aws cli installation
+echo '### Installing aws cli'
+apt install zip -y
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip -q awscliv2.zip
+sudo ./aws/install
+
+echo '### Attaching EBS'
+#Attach EBS
+instance_id=`curl -s http://169.254.169.254/latest/meta-data/instance-id/`
+echo $instance_id
+sleep 120 # wait till the volume is released from any old instance
+aws ec2 attach-volume --volume-id ${vol_id} --instance-id $instance_id --device /dev/sdf
+
+
+#Mount EBS
+echo '### Mounting EBS'
+sleep 10
+ls /dev/nvme1n1
+lsblk | grep nvme1n1p1 || echo -e 'o\nn\np\n1\n\n\nw' | sudo fdisk /dev/nvme1n1
+blkid | grep nvme1n1p1 || sudo mkfs.ext4 /dev/nvme1n1p1
+sudo mkdir -p ${sftp_home}
+echo "/dev/nvme1n1p1 ${sftp_home} ext4 defaults,comment=cloudconfig 0 2" | sudo tee -a /etc/fstab
+sudo mount -a
+
+#SFTP
 sftp_root_broadvine=${sftp_home}/${sftp_root_broadvine_dir}
 sftp_root_mdo=${sftp_home}/${sftp_root_mdo_dir}
 sftp_root_mdo_test=${sftp_home}/${mdo_test_user_dir}
@@ -152,6 +178,6 @@ systemctl restart sshd
 #SSM Agent installation
 mkdir /tmp/ssm
 cd /tmp/ssm
-wget https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/debian_amd64/amazon-ssm-agent.deb
+wget -q https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/debian_amd64/amazon-ssm-agent.deb
 sudo dpkg -i amazon-ssm-agent.deb
 sudo systemctl enable amazon-ssm-agent
