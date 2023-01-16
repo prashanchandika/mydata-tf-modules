@@ -79,6 +79,17 @@ resource "aws_iam_role_policy_attachment" "ebs" {
   role       = aws_iam_role.sftp.id
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
+
+#EC2 Policy creation and attachement
+resource "aws_iam_policy" "ec2_policy" {
+  name = "${var.product}-${var.deployment_identifier}-sftp-ec2-policy"
+  policy  =  file("${path.module}/templates/sftp_policy.json")
+  tags = var.tags
+}
+resource "aws_iam_role_policy_attachment" "ec2" {
+  role       = aws_iam_role.sftp.id
+  policy_arn = aws_iam_policy.ec2_policy.arn
+}
 # Instance Profile
 resource "aws_iam_instance_profile" "sftp" {
   name = format("%s-%s-%s", var.product, var.deployment_identifier, "sftp")
@@ -137,6 +148,7 @@ data "template_file" "userdata" {
   template = file("${path.module}/templates/ud.sh")
 
   vars = {
+    eip_aid                 = aws_eip.eip2.allocation_id
     vol_id                  = aws_ebs_volume.stfp.id
     sftp_home               = var.sftp_home
     sftp_root_broadvine_dir = var.sftp_root_broadvine_dir
@@ -190,6 +202,16 @@ resource "aws_instance" "sftp" {
   }
 }
 
+resource "aws_eip" "eip2" {
+  vpc = true
+
+  tags = merge(
+    var.tags,
+    {
+      Name = "${var.product}-${var.deployment_identifier}-sftp-eip2"
+    },
+  )
+}
 
 resource "aws_eip" "eip" {
   vpc = true

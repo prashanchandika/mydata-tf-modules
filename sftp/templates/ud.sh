@@ -7,7 +7,6 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip
 unzip -q awscliv2.zip
 sudo ./aws/install
 
-
 #Attach EBS
 echo '### Attaching EBS'
 instance_id=`curl -s http://169.254.169.254/latest/meta-data/instance-id/`
@@ -21,10 +20,17 @@ echo '### Mounting EBS'
 sleep 10
 ls /dev/nvme1n1
 lsblk | grep nvme1n1p1 || echo -e 'o\nn\np\n1\n\n\nw' | sudo fdisk /dev/nvme1n1
-blkid | grep nvme1n1p1 || sudo mkfs.ext4 /dev/nvme1n1p1
+blkid | grep nvme1n1p1 | grep ext4 || sudo mkfs.ext4 /dev/nvme1n1p1
 sudo mkdir -p ${sftp_home}
 echo "/dev/nvme1n1p1 ${sftp_home} ext4 defaults,comment=cloudconfig 0 2" | sudo tee -a /etc/fstab
 sudo mount -a
+
+#Attach EIP
+echo '### Associating EIP.'
+echo "allocation ID is ${eip_aid}"
+aws ec2 associate-address --instance-id $instance_id --allocation-id ${eip_aid}
+
+
 
 #SFTP
 sftp_root_broadvine=${sftp_home}/${sftp_root_broadvine_dir}
