@@ -151,21 +151,7 @@ data "template_file" "userdata" {
     eip_aid                 = aws_eip.eip2.allocation_id
     vol_id                  = aws_ebs_volume.stfp.id
     sftp_home               = var.sftp_home
-    sftp_root_broadvine_dir = var.sftp_root_broadvine_dir
-    sftp_root_mdo_dir       = var.sftp_root_mdo_dir
-    mdo_test_user_dir       = var.mdo_test_user_dir
-    mdo_udp_user_dir        = var.mdo_udp_user_dir
-    mdo_udp_test_user_dir   = var.mdo_udp_test_user_dir
-    sftp_user               = var.sftp_user
-    sftp_pass               = var.sftp_pass
-    mdo_user                = var.mdo_user
-    mdo_pass                = var.mdo_pass
-    mdo_test_user           = var.mdo_test_user
-    mdo_test_pass           = var.mdo_test_pass
-    mdo_udp_user            = var.mdo_udp_user
-    mdo_udp_pass            = var.mdo_udp_pass
-    mdo_udp_test_user       = var.mdo_udp_test_user
-    mdo_udp_test_pass       = var.mdo_udp_test_pass
+    sftp_settings           = format("%s%s%s", "'", jsonencode(var.sftp_settings), "'")
   }
 
   depends_on = [

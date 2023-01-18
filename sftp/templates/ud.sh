@@ -30,156 +30,61 @@ echo '### Associating EIP.'
 echo "allocation ID is ${eip_aid}"
 aws ec2 associate-address --instance-id $instance_id --allocation-id ${eip_aid}
 
-
-
 #SFTP
-sftp_root_broadvine=${sftp_home}/${sftp_root_broadvine_dir}
-sftp_root_mdo=${sftp_home}/${sftp_root_mdo_dir}
-sftp_root_mdo_test=${sftp_home}/${mdo_test_user_dir}
-sftp_root_mdo_udp=${sftp_home}/${mdo_udp_user_dir}
-sftp_root_mdo_udp_test=${sftp_home}/${mdo_udp_test_user_dir}
+echo "### Installing jq"
+apt install jq -y
+sftp_settings=${sftp_settings}
+echo $sftp_settings
 
-echo "### Create chroots"
+
+#Creating sftp_home
 mkdir -p ${sftp_home} && chmod 755 ${sftp_home}
-mkdir -p $sftp_root_broadvine && chmod 755 $sftp_root_broadvine
-mkdir -p  $sftp_root_mdo && chmod 755 $sftp_root_mdo
-mkdir -p  $sftp_root_mdo_test && chmod 755 $sftp_root_mdo_test
-mkdir -p  $sftp_root_mdo_udp && chmod 755 $sftp_root_mdo_udp
-mkdir -p  $sftp_root_mdo_udp_test && chmod 755 $sftp_root_mdo_udp_test
 
-
-echo "### Create broadvine subdirectories"
-mkdir -p $sftp_root_broadvine/Outbound
-mkdir -p $sftp_root_broadvine/Outbound/ERP/Actual
-mkdir -p $sftp_root_broadvine/Outbound/myPlan/myPlan\ Budget
-mkdir -p $sftp_root_broadvine/Outbound/myPlan/myPlan\ Forecast
-
-echo "### Create mdo shared subdirectories"
-mkdir -p $sftp_root_mdo/YDM
-
-echo "### Create mdo test subdirectories"
-mkdir -p $sftp_root_mdo_test/MAR
-
-echo "### Create mdo udp subdirectories"
-mkdir -p $sftp_root_mdo_udp/Outbound
-mkdir -p $sftp_root_mdo_udp/Outbound/Trend
-mkdir -p $sftp_root_mdo_udp/Outbound/Ledger
-mkdir -p $sftp_root_mdo_udp/Outbound/Plan
-mkdir -p $sftp_root_mdo_udp/Outbound/Balance
-mkdir -p $sftp_root_mdo_udp/Outbound/ERP
-mkdir -p $sftp_root_mdo_udp/Outbound/ERP/Actual
-mkdir -p $sftp_root_mdo_udp/Outbound/ABC
-mkdir -p $sftp_root_mdo_udp/Outbound/XYZ
-mkdir -p $sftp_root_mdo_udp/Inbound
-mkdir -p $sftp_root_mdo_udp/Archive
-mkdir -p $sftp_root_mdo_udp/Backup
-mkdir -p $sftp_root_mdo_udp/Common
-mkdir -p $sftp_root_mdo_udp/Share
-mkdir -p $sftp_root_mdo_udp/Share/ABC
-mkdir -p $sftp_root_mdo_udp/Share/XYZ
-mkdir -p $sftp_root_mdo_udp/MDO
-mkdir -p $sftp_root_mdo_udp/MDO/XYZ
-mkdir -p $sftp_root_mdo_udp/MDO/YDM
-mkdir -p $sftp_root_mdo_udp/PMS
-mkdir -p $sftp_root_mdo_udp/Temp
-
-echo "### Create mdo udp test subdirectories"
-mkdir -p $sftp_root_mdo_udp_test/Outbound
-mkdir -p $sftp_root_mdo_udp_test/Outbound/Trend
-mkdir -p $sftp_root_mdo_udp_test/Outbound/Ledger
-mkdir -p $sftp_root_mdo_udp_test/Outbound/Plan
-mkdir -p $sftp_root_mdo_udp_test/Outbound/Balance
-mkdir -p $sftp_root_mdo_udp_test/Outbound/ERP
-mkdir -p $sftp_root_mdo_udp_test/Outbound/ERP/Actual
-mkdir -p $sftp_root_mdo_udp_test/Outbound/ABC
-mkdir -p $sftp_root_mdo_udp_test/Outbound/XYZ
-mkdir -p $sftp_root_mdo_udp_test/Inbound
-mkdir -p $sftp_root_mdo_udp_test/Archive
-mkdir -p $sftp_root_mdo_udp_test/Backup
-mkdir -p $sftp_root_mdo_udp_test/Common
-mkdir -p $sftp_root_mdo_udp_test/Share
-mkdir -p $sftp_root_mdo_udp_test/Share/ABC
-mkdir -p $sftp_root_mdo_udp_test/Share/XYZ
-mkdir -p $sftp_root_mdo_udp_test/MDO
-mkdir -p $sftp_root_mdo_udp_test/MDO/XYZ
-mkdir -p $sftp_root_mdo_udp_test/MDO/YDM
-mkdir -p $sftp_root_mdo_udp_test/PMS
-mkdir -p $sftp_root_mdo_udp_test/Temp
 
 echo "### Create sftp user"
-useradd -p $(openssl passwd -1 "${sftp_pass}") "${sftp_user}"
-useradd -p $(openssl passwd -1 "${mdo_pass}") "${mdo_user}"
-useradd -p $(openssl passwd -1 "${mdo_test_pass}") "${mdo_test_user}"
-useradd -p $(openssl passwd -1 "${mdo_udp_pass}") "${mdo_udp_user}"
-useradd -p $(openssl passwd -1 "${mdo_udp_test_pass}") "${mdo_udp_test_user}"
+usercount=`echo $sftp_settings | jq -c -r .sftp_settings[].username | wc -w`
+for (( i=0; i<$usercount; i++))
+do
+        username=`echo $sftp_settings | jq -r .sftp_settings[$i].username`
+        password=`echo $sftp_settings | jq -r .sftp_settings[$i].password`
+        user_home=`echo $sftp_settings | jq -r .sftp_settings[$i].user_home`
+        sub_dirs=`echo $sftp_settings | jq  -c -r .sftp_settings[$i].sub_dirs | tr -d '[' | tr -d ']' | tr -d '"' | sed 's/,/\n/g' | sed 's/^/./g'`
+        echo "### Creating $username with password $password"
+        useradd -p $(openssl passwd -1 "$password") "$username"
 
-echo "### Change ownership"
-chown -R ${sftp_user}:ubuntu $sftp_root_broadvine/*
-chown -R ${mdo_user}:ubuntu $sftp_root_mdo/*
-chown -R ${mdo_test_user}:ubuntu $sftp_root_mdo_test/*
-chown -R ${mdo_udp_user}:ubuntu $sftp_root_mdo_udp/*
-chown -R ${mdo_udp_test_user}:ubuntu $sftp_root_mdo_udp_test/*
+        echo "### Creating user home $user_home for $username"
+        mkdir -p ${sftp_home}/$user_home
 
-echo "### Set write permission to ubuntu user"
-chmod -R g+w $sftp_root_broadvine/*
-chmod -R g+w $sftp_root_mdo/*
-chmod -R g+w $sftp_root_mdo_test/*
-chmod -R g+w $sftp_root_mdo_udp/*
-chmod -R g+w $sftp_root_mdo_udp_test/*
 
-echo "### Restricting SFTP user access to directory"
-tee -a /etc/ssh/sshd_config << EOF
-Match User ${sftp_user}
+        echo "### Lising sub directories for $username"
+        echo $sub_dirs
+
+        echo "### Creating subdirectories for $username"
+        cd ${sftp_home}/$user_home
+        mkdir -p $sub_dirs
+        
+        echo "### Changing ownership of sftp directories for $username"
+        chown -R $username:ubuntu ${sftp_home}/$user_home/*
+
+        echo "### Setting write permission to ubuntu user on $username s directories"
+        chmod -R g+w ${sftp_home}/$user_home/*
+
+        echo "### Restricting SFTP user access to ${sftp_home}/$user_home directory for $username"
+        tee -a /etc/ssh/sshd_config << EOF
+Match User $username
         ForceCommand internal-sftp
         PasswordAuthentication yes
-        ChrootDirectory $sftp_root_broadvine
+        ChrootDirectory ${sftp_home}/$user_home
         PermitTunnel no
         AllowAgentForwarding no
         AllowTcpForwarding no
         X11Forwarding no
-
-Match User ${mdo_user}
-        ForceCommand internal-sftp
-        PasswordAuthentication yes
-        ChrootDirectory $sftp_root_mdo
-        PermitTunnel no
-        AllowAgentForwarding no
-        AllowTcpForwarding no
-        X11Forwarding no
-
-Match User ${mdo_test_user}
-        ForceCommand internal-sftp
-        PasswordAuthentication yes
-        ChrootDirectory $sftp_root_mdo_test
-        PermitTunnel no
-        AllowAgentForwarding no
-        AllowTcpForwarding no
-        X11Forwarding no
-
-Match User ${mdo_udp_user}
-        ForceCommand internal-sftp
-        PasswordAuthentication yes
-        ChrootDirectory $sftp_root_mdo_udp
-        PermitTunnel no
-        AllowAgentForwarding no
-        AllowTcpForwarding no
-        X11Forwarding no
-
-Match User ${mdo_udp_test_user}
-        ForceCommand internal-sftp
-        PasswordAuthentication yes
-        ChrootDirectory $sftp_root_mdo_udp_test
-        PermitTunnel no
-        AllowAgentForwarding no
-        AllowTcpForwarding no
-        X11Forwarding no
-
 EOF
+
+done
 
 echo "### Restart sshd service"
 systemctl restart sshd
-
-
 
 
 #SSM Agent installation
@@ -190,4 +95,4 @@ sudo dpkg -i amazon-ssm-agent.deb
 sudo systemctl enable amazon-ssm-agent
 
 ### CLOSURE
-echo '### Userdata script completed!'
+echo '### Userdata script completed!!!'

@@ -53,6 +53,10 @@ variable "sftp_ingress_cidrs" {
 
 
 #SFTP
+variable "sftp_settings" {
+  default = []
+}
+
 variable "sftp_home"{
   type    = string
   default = "/sftp_home"
