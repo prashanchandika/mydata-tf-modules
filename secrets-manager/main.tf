@@ -4,7 +4,7 @@ resource "aws_secretsmanager_secret" "rds_secret" {
   tags = var.tags
 }
 
-/* resource "aws_secretsmanager_secret_version" "rds_secret_value" {
+resource "aws_secretsmanager_secret_version" "rds_secret_value" {
   secret_id     = aws_secretsmanager_secret.rds_secret.id
   secret_string = var.secret_string
   lifecycle {
@@ -13,5 +13,5 @@ resource "aws_secretsmanager_secret" "rds_secret" {
       secret_id,
     ]
   }
-} */
+}
 
